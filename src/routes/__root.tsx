@@ -77,11 +77,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "RepoScope — GitHub Repository Dashboard" },
+      {
+        name: "description",
+        content: "Browse your GitHub repositories, inspect key details, and follow recent activity.",
+      },
+      { property: "og:title", content: "RepoScope — GitHub Repository Dashboard" },
+      {
+        property: "og:description",
+        content: "Browse your GitHub repositories, inspect key details, and follow recent activity.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
