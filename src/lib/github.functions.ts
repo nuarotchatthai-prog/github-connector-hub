@@ -113,30 +113,35 @@ interface RawEvent {
 
 function summarizeEvent(e: RawEvent): string {
   const p = e.payload as Record<string, any>;
+  const pr = p["pull_request"] as { number?: number; title?: string } | undefined;
+  const issue = p["issue"] as { number?: number; title?: string } | undefined;
   switch (e.type) {
     case "PushEvent": {
-      const commits = Array.isArray(p.commits) ? p.commits.length : 0;
-      const branch = typeof p.ref === "string" ? p.ref.replace("refs/heads/", "") : "";
+      const commits = Array.isArray(p["commits"]) ? p["commits"].length : 0;
+      const ref = p["ref"];
+      const branch = typeof ref === "string" ? ref.replace("refs/heads/", "") : "";
       return `Pushed ${commits} commit${commits === 1 ? "" : "s"} to ${branch}`;
     }
     case "PullRequestEvent":
-      return `${p.action} pull request #${p.pull_request?.number ?? "?"}: ${p.pull_request?.title ?? ""}`;
+      return `${p["action"]} pull request #${pr?.number ?? "?"}: ${pr?.title ?? ""}`;
     case "IssuesEvent":
-      return `${p.action} issue #${p.issue?.number ?? "?"}: ${p.issue?.title ?? ""}`;
+      return `${p["action"]} issue #${issue?.number ?? "?"}: ${issue?.title ?? ""}`;
     case "IssueCommentEvent":
-      return `Commented on issue #${p.issue?.number ?? "?"}`;
+      return `Commented on issue #${issue?.number ?? "?"}`;
     case "CreateEvent":
-      return `Created ${p.ref_type}${p.ref ? ` ${p.ref}` : ""}`;
+      return `Created ${p["ref_type"]}${p["ref"] ? ` ${p["ref"]}` : ""}`;
     case "DeleteEvent":
-      return `Deleted ${p.ref_type} ${p.ref ?? ""}`;
-    case "ReleaseEvent":
-      return `Published release ${p.release?.tag_name ?? ""}`;
+      return `Deleted ${p["ref_type"]} ${p["ref"] ?? ""}`;
+    case "ReleaseEvent": {
+      const release = p["release"] as { tag_name?: string } | undefined;
+      return `Published release ${release?.tag_name ?? ""}`;
+    }
     case "ForkEvent":
       return "Forked the repository";
     case "WatchEvent":
       return "Starred the repository";
     case "PullRequestReviewEvent":
-      return `Reviewed pull request #${p.pull_request?.number ?? "?"}`;
+      return `Reviewed pull request #${pr?.number ?? "?"}`;
     default:
       return e.type.replace(/Event$/, "");
   }
